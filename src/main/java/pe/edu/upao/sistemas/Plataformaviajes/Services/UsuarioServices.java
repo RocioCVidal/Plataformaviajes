@@ -35,6 +35,10 @@ public class UsuarioServices {
         return Optional.empty();
     }
 
+    public Optional<Usuario> obtenerUsuarioPorCorreo(String correo) {
+        return usuarioRepository.findByCorreo(correo);
+    }
+
     public Usuario registrarUsuario(SignUpDTO signUpDTO) {
 
         // Verificar si ya existe un usuario con el mismo correo
@@ -51,10 +55,10 @@ public class UsuarioServices {
         usuario.setCorreo(signUpDTO.getCorreo());
         usuario.setContrasena(signUpDTO.getContrasena());
 
-        Pais paisOrigen = paisRepository.findByNombreIgnoreCase(signUpDTO.getPaisOrigen())
+        Pais paisOrigen = paisRepository.findByNombreIgnoreCase((signUpDTO.getPaisOrigen()))
                 .orElseThrow(() -> new EntidadNoEncontradaException("País de origen no encontrado"));
 
-        Pais paisVive = paisRepository.findByNombreIgnoreCase(signUpDTO.getPaisVive())
+        Pais paisVive = paisRepository.findByNombreIgnoreCase((signUpDTO.getPaisVive()))
                 .orElseThrow(() -> new EntidadNoEncontradaException("País de residencia no encontrado"));
 
         usuario.setPaisOrigen(paisOrigen);
@@ -63,7 +67,9 @@ public class UsuarioServices {
 
         usuario.setTipoViajero(Usuario.TipoViajero.valueOf(signUpDTO.getTipoViajero()));
         usuario.setFotoPerfilUrl(signUpDTO.getFotoPerfilUrl());
-        // Configurar los campos opcionales como las redes sociales si están presentes en el DTO
+        usuario.setUrlFacebook(signUpDTO.getUrlFacebook());
+        usuario.setUrlInstagram(signUpDTO.getUrlInstagram());
+        usuario.setUrlTwiter(signUpDTO.getUrlTwiter());
 
         // Guardar el usuario en la base de datos
         return usuarioRepository.save(usuario);
